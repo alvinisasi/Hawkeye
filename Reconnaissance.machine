@@ -1,3 +1,6 @@
+//Welcome to Maltego Machines!
+
+//Each machine starts with a statement like this
 machine("alvinmiftah.Reconnaissance", 
         displayName:"Reconnaissance", 
         author:"Alvin Miftah",
@@ -5,39 +8,49 @@ machine("alvinmiftah.Reconnaissance",
 
     //A macro machine has a start function like this
     start {
-	// Transforms domain to MX record, SPF, SOA, and email address
         paths {
-            run("paterva.v2.DomainToMXrecord_DNS")
-            run("paterva.v2.DomainToSPFInformation")
-            run("paterva.v2.DomainToSOAInformation")
-            run("paterva.v2.DomainToEmailAddress_SE")
-            
-	    // Transforms domain to NS record, NS record to IP Address
+            path{
+                run("paterva.v2.DomainToEntities_Whois_NER")
+                run("paterva.v2.EmailAddressToEmailAddress_Verify")
+            }
+            path{
+                run("paterva.v2.DomainToWebsite_DNS")
+                run("paterva.v2.DNSNameToIPAddress_DNS")
+                paths{
+                    run("paterva.v2.IPAddressToDNSName_DNS")
+                    run("paterva.v2.maltego.shodan.ipv4addresstoservice")
+                }
+            }
+            path{
+                run("paterva.v2.DomainToWebsite_DNS")
+                run("paterva.v2.uniqueID")
+                run("paterva.v2.toSitesIdentifier")
+            }
+            path {
+                run("paterva.v2.DomainToDNSName_ZT")    
+            }
+            path{
+                run("paterva.v2.DomainToDNSName_DNSBrute")
+            }
+            path {
+                run("paterva.v2.DomainToDNSName_DB")
+            }
+            path {
+                run("paterva.v2.DomainToDNSNameSchema")
+            }
+            path {
+                run("paterva.v2.DomainToDNSName_DB_interest")
+            }
+            path {
+                run("paterva.v2.DomainToMXrecord_DNS")
+            }
             path {
                 run("paterva.v2.DomainToNSrecord_DNS")
-                run("paterva.v2.DNSNameToIPAddress_DNS")
             }
-
-            // Transforms domain to IPv4, IPv4 to IP dns-name
             path {
-                run("paterva.v2.maltego.shodan.domaintoipv4address.with-hostname")
-                run("paterva.v2.maltego.shodan.ipv4addresstodnsname")
-            }
-	    
-            // Transforms domain to IPv4, IPv4 to IP address company
-            path {
-                run("paterva.v2.maltego.shodan.domaintoipv4address.with-hostname")
-                run("paterva.v2.maltego.shodan.ipv4addresstocompany")
-            }
-		
- 	    // Transforms domain to IPv4, IPv4 to IP address location
-            path {
-                run("paterva.v2.maltego.shodan.domaintoipv4address.with-hostname")
-                run("paterva.v2.maltego.shodan.ipv4addresstolocation")
-            }
+                run("paterva.v2.DomainToSOAInformation")
+            }   
         }
-
     }
+        
 }
-
-
